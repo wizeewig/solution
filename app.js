@@ -1,25 +1,23 @@
-// Import necessary modules
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 
-// Create an Express application
+
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON requests
 app.use(bodyParser.json());
 
-// JSON file to simulate a database
+
 const pantryDataPath = 'pantry.json';
 
-// Helper function to read JSON data from the file
+
 function readPantryData() {
   const rawData = fs.readFileSync(pantryDataPath);
   return JSON.parse(rawData);
 }
 
-// Helper function to write JSON data to the file
+
 function writePantryData(data) {
   fs.writeFileSync(pantryDataPath, JSON.stringify(data, null, 2));
 }
@@ -63,11 +61,9 @@ app.put('https://getpantry.cloud/apiv1/pantry/465b8319-e70d-40c4-b75a-cbb28bbd87
   const itemId = req.params.id;
   const updatedItem = req.body;
 
-  // Find the index of the item with the given ID
   const itemIndex = pantryData.findIndex(item => item.id === itemId);
 
   if (itemIndex !== -1) {
-    // Update the item
     pantryData[itemIndex] = updatedItem;
     writePantryData(pantryData);
     res.json(updatedItem);
@@ -76,16 +72,16 @@ app.put('https://getpantry.cloud/apiv1/pantry/465b8319-e70d-40c4-b75a-cbb28bbd87
   }
 });
 
-// Delete (DELETE) operation
+
 app.delete('https://getpantry.cloud/apiv1/pantry/465b8319-e70d-40c4-b75a-cbb28bbd871d/basket/NewBasket', (req, res) => {
   const pantryData = readPantryData();
   const itemId = req.params.id;
 
-  // Find the index of the item with the given ID
+
   const itemIndex = pantryData.findIndex(item => item.id === itemId);
 
   if (itemIndex !== -1) {
-    // Remove the item
+  
     const deletedItem = pantryData.splice(itemIndex, 1)[0];
     writePantryData(pantryData);
     res.json(deletedItem);
@@ -94,7 +90,7 @@ app.delete('https://getpantry.cloud/apiv1/pantry/465b8319-e70d-40c4-b75a-cbb28bb
   }
 });
 
-// Start the server
+
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
